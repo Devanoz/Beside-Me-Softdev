@@ -19,7 +19,7 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        initializeTTS()
+        initializeTTS()
 
         binding.cvObjectDetection.setOnClickListener {
             val intent = Intent(this,ObjectDetection::class.java)
@@ -33,6 +33,11 @@ class HomeActivity : AppCompatActivity() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        resumeTTS()
+    }
+
     private fun initializeTTS() {
         textToSpeech = TextToSpeech(this) { status ->
             if (status != TextToSpeech.ERROR ) {
@@ -40,6 +45,23 @@ class HomeActivity : AppCompatActivity() {
                 if(status == TextToSpeech.SUCCESS) {
                     textToSpeech.speak(
                         getString(R.string.home_activity_welcoming_message),
+                        TextToSpeech.QUEUE_FLUSH,
+                        null,
+                        null
+                    )
+                }
+            }
+
+        }
+    }
+
+    private fun resumeTTS() {
+        textToSpeech = TextToSpeech(this) { status ->
+            if (status != TextToSpeech.ERROR ) {
+                textToSpeech.language = Locale("id")
+                if(status == TextToSpeech.SUCCESS) {
+                    textToSpeech.speak(
+                        getString(R.string.home_activity_feature_reexplanation),
                         TextToSpeech.QUEUE_FLUSH,
                         null,
                         null
