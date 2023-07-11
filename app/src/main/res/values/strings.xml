@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">BesideMe</string>
+
+    <string name="home_activity_welcoming_message">halo selamat datang di aplikasi beside me, tedapat dua pilihan tombol tombol,tombol atas untuk deteksi objek ,dan tombol bawah untuk pengenalan teks</string>
 </resources>
