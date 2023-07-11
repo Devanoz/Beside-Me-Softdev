@@ -35,7 +35,7 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        resumeTTS()
+//        resumeTTS()
     }
 
     private fun initializeTTS() {
