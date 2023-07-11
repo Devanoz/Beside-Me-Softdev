@@ -47,4 +47,17 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-vision:19.0.0'
 //    implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+
+    //ML kit object labeling
+    implementation 'com.google.mlkit:image-labeling:17.0.7'
+
+    //CameraX
+    def camerax_version = "1.2.2"
+    implementation "androidx.camera:camera-core:${camerax_version}"
+    implementation "androidx.camera:camera-camera2:${camerax_version}"
+    implementation "androidx.camera:camera-lifecycle:${camerax_version}"
+    implementation "androidx.camera:camera-video:${camerax_version}"
+
+    implementation "androidx.camera:camera-view:${camerax_version}"
+    implementation "androidx.camera:camera-extensions:${camerax_version}"
 }

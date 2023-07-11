@@ -1,9 +1,11 @@
 package com.example.besideme
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import com.example.besideme.databinding.ActivityHomeBinding
+import com.example.besideme.ui.objectdetection.ObjectDetection
 import java.util.Locale
 
 
@@ -17,10 +19,11 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        initializeTTS()
+//        initializeTTS()
 
         binding.cvObjectDetection.setOnClickListener {
-
+            val intent = Intent(this,ObjectDetection::class.java)
+            startActivity(intent)
         }
 
         binding.cvTextRecognition.setOnClickListener {
