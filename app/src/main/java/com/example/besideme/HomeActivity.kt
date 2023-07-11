@@ -31,10 +31,10 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun initializeTTS() {
-        textToSpeech = TextToSpeech(this) {
-            if (it != TextToSpeech.ERROR ) {
+        textToSpeech = TextToSpeech(this) { status ->
+            if (status != TextToSpeech.ERROR ) {
                 textToSpeech.language = Locale("id")
-                if(it == TextToSpeech.SUCCESS) {
+                if(status == TextToSpeech.SUCCESS) {
                     textToSpeech.speak(
                         getString(R.string.home_activity_welcoming_message),
                         TextToSpeech.QUEUE_FLUSH,
