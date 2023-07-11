@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "766521700247",
+    "project_id": "besideme-ac881",
+    "storage_bucket": "besideme-ac881.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:766521700247:android:0e998c2df26f282b0c1ed2",
+        "android_client_info": {
+          "package_name": "com.example.besideme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "766521700247-no8c1sskcd7mkb5ulhtor88u917hbqmb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCb5OvGy-7ApVRd6wlMd9d53HGa1Pj-rCg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "766521700247-no8c1sskcd7mkb5ulhtor88u917hbqmb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

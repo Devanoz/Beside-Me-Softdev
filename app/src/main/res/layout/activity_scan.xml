@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".ScanActivity">
 
     <ScrollView
         android:layout_above="@+id/linear_holder"
@@ -34,6 +33,7 @@
             android:text="Capture"
             android:layout_margin="8dp"/>
         <Button
+            android:visibility="gone"
             android:id="@+id/button_copy"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
