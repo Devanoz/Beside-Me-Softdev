@@ -54,6 +54,8 @@ dependencies {
     // To recognize Latin script
     implementation 'com.google.mlkit:text-recognition:16.0.0'
 
+    //ML kit translation
+    implementation 'com.google.mlkit:translate:17.0.1'
 
     //CameraX
     def camerax_version = "1.2.2"

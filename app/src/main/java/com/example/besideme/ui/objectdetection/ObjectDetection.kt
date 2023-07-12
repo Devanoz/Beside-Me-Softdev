@@ -18,6 +18,11 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.video.Recording
 import androidx.core.content.ContextCompat
 import com.example.besideme.databinding.ActivityObjectDetectionBinding
+import com.google.mlkit.common.model.DownloadConditions
+import com.google.mlkit.nl.translate.TranslateLanguage
+import com.google.mlkit.nl.translate.Translation
+import com.google.mlkit.nl.translate.Translator
+import com.google.mlkit.nl.translate.TranslatorOptions
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.label.ImageLabel
 import com.google.mlkit.vision.label.ImageLabeler
@@ -42,6 +47,13 @@ class ObjectDetection : AppCompatActivity() {
 
     private lateinit var imageLabeler: ImageLabeler
 
+    private val option = TranslatorOptions.Builder()
+        .setSourceLanguage(TranslateLanguage.ENGLISH)
+        .setTargetLanguage(TranslateLanguage.INDONESIAN)
+        .build()
+
+    private lateinit var englishIndonesianTranslator: Translator
+
     private val activityResultLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
@@ -59,12 +71,13 @@ class ObjectDetection : AppCompatActivity() {
         }
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityObjectDetectionBinding.inflate(layoutInflater)
         setContentView(binding.root)
         cameraExecutor = Executors.newSingleThreadExecutor()
+
+        englishIndonesianTranslator = Translation.getClient(option)
 
         if (allPermissionsGranted()) {
             startCamera()
@@ -81,22 +94,34 @@ class ObjectDetection : AppCompatActivity() {
     }
 
     private fun initializeTtsWithLabel(labels: List<ImageLabel>) {
+        var downloadConditions = DownloadConditions.Builder().build()
+
         textToSpeech = TextToSpeech(this) { status ->
-            if (status != TextToSpeech.ERROR ) {
-                textToSpeech.language = Locale.UK
-                if(status == TextToSpeech.SUCCESS) {
+            if (status != TextToSpeech.ERROR) {
+                textToSpeech.language = Locale("id")
+                if (status == TextToSpeech.SUCCESS) {
                     val stringBuilder = StringBuilder()
                     var position = 1
-                    for(label in labels) {
-                        if(position==1) stringBuilder.append(label.text) else stringBuilder.append(", ${label.text}")
+                    for (label in labels) {
+                        if (position == 1) stringBuilder.append(label.text) else stringBuilder.append(
+                            ", ${label.text}"
+                        )
                         position++
                     }
-                    textToSpeech.speak(
-                        stringBuilder.toString(),
-                        TextToSpeech.QUEUE_FLUSH,
-                        null,
-                        null
-                    )
+                    var detectionResultEng = stringBuilder.toString()
+                    englishIndonesianTranslator.downloadModelIfNeeded(downloadConditions)
+                        .addOnSuccessListener {
+                            englishIndonesianTranslator.translate(detectionResultEng)
+                                .addOnSuccessListener { translationResult ->
+                                    textToSpeech.speak(
+                                        translationResult,
+                                        TextToSpeech.QUEUE_FLUSH,
+                                        null,
+                                        null
+                                    )
+                                }
+                        }
+
                 }
             }
 
@@ -125,8 +150,9 @@ class ObjectDetection : AppCompatActivity() {
                 ContextCompat.getMainExecutor(this)
             ) { imageProxy: ImageProxy ->
                 val image = imageProxy.image
-                if(image != null) {
-                    val inputImage = InputImage.fromMediaImage(image,imageProxy.imageInfo.rotationDegrees)
+                if (image != null) {
+                    val inputImage =
+                        InputImage.fromMediaImage(image, imageProxy.imageInfo.rotationDegrees)
                     imageLabeler.process(inputImage).addOnSuccessListener {
                         initializeTtsWithLabel(it)
                         Log.d(DETECTED_IMAGE_TAG, "detection running")
