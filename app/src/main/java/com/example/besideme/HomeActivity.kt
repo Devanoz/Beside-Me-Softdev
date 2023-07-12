@@ -10,7 +10,6 @@ import com.example.besideme.ui.objectdetection.ObjectDetection
 import com.example.besideme.ui.textrecognition.TextRecognition
 import java.util.Locale
 
-
 class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
 
