@@ -81,7 +81,6 @@ class ObjectDetection : AppCompatActivity() {
             startCamera()
         }
 
-
         imageLabeler = ImageLabeling.getClient(ImageLabelerOptions.DEFAULT_OPTIONS)
 
     }

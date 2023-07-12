@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
+import androidx.appcompat.app.AppCompatDelegate
 import com.example.besideme.databinding.ActivityHomeBinding
 import com.example.besideme.ui.objectdetection.ObjectDetection
 import com.example.besideme.ui.textrecognition.TextRecognition
@@ -18,6 +19,7 @@ class HomeActivity : AppCompatActivity() {
     @androidx.camera.core.ExperimentalGetImage
     override fun  onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setDefaultNightMode()
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -32,9 +34,10 @@ class HomeActivity : AppCompatActivity() {
             val intent = Intent(this, TextRecognition::class.java)
             startActivity(intent)
         }
-
-
     }
+
+    private fun setDefaultNightMode() { AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO) }
+
 
     private fun initializeTTS() {
         textToSpeech = TextToSpeech(this) { status ->
