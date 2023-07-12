@@ -1,46 +1,41 @@
-package com.example.besideme.ui.objectdetection
+package com.example.besideme.ui.textrecognition
 
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.video.Recording
 import androidx.core.content.ContextCompat
-import com.example.besideme.databinding.ActivityObjectDetectionBinding
+import com.example.besideme.databinding.ActivityTextRecognitionBinding
 import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.label.ImageLabel
-import com.google.mlkit.vision.label.ImageLabeler
-import com.google.mlkit.vision.label.ImageLabeling
-import com.google.mlkit.vision.label.defaults.ImageLabelerOptions
+import com.google.mlkit.vision.text.Text
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.TextRecognizer
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-@androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class)
-class ObjectDetection : AppCompatActivity() {
-    private lateinit var binding: ActivityObjectDetectionBinding
+@ExperimentalGetImage
+class TextRecognition : AppCompatActivity() {
 
-    private var imageCapture: ImageCapture? = null
+    private lateinit var binding: ActivityTextRecognitionBinding
 
-    private var videoCapture: ImageCapture? = null
-    private var recording: Recording? = null
-
-    private lateinit var textToSpeech: TextToSpeech
+    private lateinit var recognizer: TextRecognizer
 
     private lateinit var cameraExecutor: ExecutorService
 
-    private lateinit var imageLabeler: ImageLabeler
+    private lateinit var textToSpeech: TextToSpeech
 
     private val activityResultLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -59,12 +54,13 @@ class ObjectDetection : AppCompatActivity() {
         }
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityObjectDetectionBinding.inflate(layoutInflater)
+        binding = ActivityTextRecognitionBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         cameraExecutor = Executors.newSingleThreadExecutor()
+        recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 
         if (allPermissionsGranted()) {
             startCamera()
@@ -74,25 +70,16 @@ class ObjectDetection : AppCompatActivity() {
         binding.btnDetect.setOnClickListener {
             startCamera()
         }
-
-
-        imageLabeler = ImageLabeling.getClient(ImageLabelerOptions.DEFAULT_OPTIONS)
-
     }
 
-    private fun initializeTtsWithLabel(labels: List<ImageLabel>) {
+    private fun detectTextAndTriggerVoice(text: Text) {
         textToSpeech = TextToSpeech(this) { status ->
             if (status != TextToSpeech.ERROR ) {
-                textToSpeech.language = Locale.UK
+                textToSpeech.language = Locale("id")
                 if(status == TextToSpeech.SUCCESS) {
-                    val stringBuilder = StringBuilder()
-                    var position = 1
-                    for(label in labels) {
-                        if(position==1) stringBuilder.append(label.text) else stringBuilder.append(", ${label.text}")
-                        position++
-                    }
+
                     textToSpeech.speak(
-                        stringBuilder.toString(),
+                        text.text,
                         TextToSpeech.QUEUE_FLUSH,
                         null,
                         null
@@ -103,11 +90,7 @@ class ObjectDetection : AppCompatActivity() {
         }
     }
 
-    private fun takePhoto() {}
 
-    private fun captureVideo() {}
-
-    @androidx.camera.core.ExperimentalGetImage
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener({
@@ -125,13 +108,11 @@ class ObjectDetection : AppCompatActivity() {
                 ContextCompat.getMainExecutor(this)
             ) { imageProxy: ImageProxy ->
                 val image = imageProxy.image
-                if(image != null) {
-                    val inputImage = InputImage.fromMediaImage(image,imageProxy.imageInfo.rotationDegrees)
-                    imageLabeler.process(inputImage).addOnSuccessListener {
-                        initializeTtsWithLabel(it)
-                        Log.d(DETECTED_IMAGE_TAG, "detection running")
-                    }.addOnFailureListener {
-                        Log.d(DETECTED_IMAGE_TAG, "detection failed")
+                if (image != null) {
+                    val inputImage =
+                        InputImage.fromMediaImage(image, imageProxy.imageInfo.rotationDegrees)
+                    recognizer.process(inputImage).addOnSuccessListener {
+                        detectTextAndTriggerVoice(it)
                     }
                 }
             }
@@ -161,6 +142,7 @@ class ObjectDetection : AppCompatActivity() {
         ) == PackageManager.PERMISSION_GRANTED
     }
 
+
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
@@ -168,7 +150,7 @@ class ObjectDetection : AppCompatActivity() {
 
     companion object {
         private const val TAG = "CameraXApp"
-        private const val DETECTED_IMAGE_TAG = "DetectedImage"
+        private const val DETECTED_TEXT_TAG = "DetectedText"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private val REQUIRED_PERMISSIONS = mutableListOf(
             Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO
@@ -178,5 +160,4 @@ class ObjectDetection : AppCompatActivity() {
             }
         }.toTypedArray()
     }
-
 }

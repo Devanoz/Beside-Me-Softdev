@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import com.example.besideme.databinding.ActivityHomeBinding
 import com.example.besideme.ui.objectdetection.ObjectDetection
+import com.example.besideme.ui.textrecognition.TextRecognition
 import java.util.Locale
 
 
@@ -14,7 +15,8 @@ class HomeActivity : AppCompatActivity() {
 
     private lateinit var textToSpeech: TextToSpeech
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    @androidx.camera.core.ExperimentalGetImage
+    override fun  onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -27,7 +29,8 @@ class HomeActivity : AppCompatActivity() {
         }
 
         binding.cvTextRecognition.setOnClickListener {
-
+            val intent = Intent(this, TextRecognition::class.java)
+            startActivity(intent)
         }
 
 

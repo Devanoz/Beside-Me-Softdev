@@ -51,6 +51,10 @@ dependencies {
     //ML kit object labeling
     implementation 'com.google.mlkit:image-labeling:17.0.7'
 
+    // To recognize Latin script
+    implementation 'com.google.mlkit:text-recognition:16.0.0'
+
+
     //CameraX
     def camerax_version = "1.2.2"
     implementation "androidx.camera:camera-core:${camerax_version}"
