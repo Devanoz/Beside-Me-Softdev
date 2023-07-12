@@ -11,11 +11,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.video.Recording
 import androidx.core.content.ContextCompat
 import com.example.besideme.databinding.ActivityObjectDetectionBinding
 import com.google.mlkit.common.model.DownloadConditions
@@ -35,11 +33,6 @@ import java.util.concurrent.Executors
 @androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class)
 class ObjectDetection : AppCompatActivity() {
     private lateinit var binding: ActivityObjectDetectionBinding
-
-    private var imageCapture: ImageCapture? = null
-
-    private var videoCapture: ImageCapture? = null
-    private var recording: Recording? = null
 
     private lateinit var textToSpeech: TextToSpeech
 
@@ -127,10 +120,6 @@ class ObjectDetection : AppCompatActivity() {
 
         }
     }
-
-    private fun takePhoto() {}
-
-    private fun captureVideo() {}
 
     @androidx.camera.core.ExperimentalGetImage
     private fun startCamera() {
